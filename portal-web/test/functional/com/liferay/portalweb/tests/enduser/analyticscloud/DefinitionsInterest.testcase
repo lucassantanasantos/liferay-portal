@@ -9,12 +9,6 @@ definition {
 
 	setUp {
 		ACUtils.launchAC();
-
-		ACSettings.takeTokenFromAnalyticsCloud();
-
-		TestCase.setUpPortalInstance();
-
-		ACUtils.launchDXP();
 	}
 
 	tearDown {
@@ -30,12 +24,33 @@ definition {
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8785 | Test Summary: Add a keyword that already exists"
-	@ignore = "true"
 	@priority = "3"
 	test AddKeywordAlreadyExists {
+		task ("Enter in the Interests from Settings Definitions") {
+			var word = "ac keyword";
 
-		// TODO LRAC-8785 AddKeywordAlreadyExists pending implementation
+			ACNavigation.goToSettings();
 
+			ACSettings.goToDefinitions();
+
+			ACDefinitions.goToDefinitionType(definitionType = "Interests");
+		}
+
+		task ("make a keyword and check if it exist") {
+			ACSettings.addKeywords(keyword = "${word}");
+
+			ACInterests.assertKeywordPresentByIndex(
+				index = "1",
+				keywordName = "${word}");
+		}
+
+		task ("make other keyword equal the previois, and check if it not exist") {
+			ACSettings.addKeywords(keyword = "${word}");
+
+			ACInterests.assertKeywordNotPresentByIndex(
+				index = "2",
+				keywordName = "${word}");
+		}
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8786 | Test Summary: Add keyword when there are none"
