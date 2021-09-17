@@ -634,16 +634,66 @@ definition {
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8586 | Test Summary: Sort the Segment 'Add Members' Modal"
 	@priority = "3"
 	test SortSegmentAddMembersModal {
-		task ("Go to AC and segments") {
-			ACUtils.launchAC();
+		var users = "ac,brian,chris";
 
-			ACNavigation.goToSegments();
+		task ("Get site assigned property name") {
+			var propertyName = ACDXPSettings.connectDXPtoAnalyticsCloud(siteName = "Site Name");
 		}
 
-		task ("Create a new static segment and click to add members") {
+		task ("Add a new user in DXP") {
+			for (var name : list "${users}") {
+				JSONUser.addUser(
+					userEmailAddress = "${name}@liferay.com",
+					userFirstName = "${name}",
+					userLastName = "${name}",
+					userScreenName = "${name}");
+			}
+		}
+
+		task ("Sync the Contact Data") {
+			ACDXPSettings.syncNewContactData();
+		}
+
+		task ("Sign in with the new user to visit the site pages") {
+			for (var name : list "${users}") {
+				User.logoutAndLoginPG(
+					userLoginEmailAddress = "${name}@liferay.com",
+					userLoginFullName = "${name} ${name}");
+
+				Navigator.gotoSitePage(
+					pageName = "AC Page",
+					siteName = "Site Name");
+
+				Pause(locator1 = "5000");
+			}
+		}
+
+		task ("Switch to new property in AC") {
+			ACUtils.closeAllSessionsAndWait();
+
+			ACUtils.launchAC();
+
+			ACProperties.switchProperty(propertyName = "${propertyName}");
+		}
+
+		task ("Go to Segments and add a new segment") {
+			ACNavigation.goToSegments();
+
 			ACSegments.createStaticSegment();
 
 			ACSegments.nameSegment(segmentName = "New Segment Test");
+
+			ACSegments.addStaticMember(tableMember = "ac ac");
+
+			ACSegments.saveSegment();
+		}
+
+		task ("Go to Segments and edit") {
+			ACNavigation.goToSegments();
+
+			ACSegments.editSegment(searchTerm = "New Segment Test");
+
+			ACSegments.viewEditorLabel(labelName = "Static Segment");
 
 			Click(locator1 = "ACSegments#ADD_MEMBERS_BUTTON");
 		}
@@ -651,14 +701,24 @@ definition {
 		task ("Assert the first user in the list, click the sort button and assert that the user has changed") {
 			AssertElementPresent(
 				index = "1",
-				key_userName = "Abram Bauch",
+				key_userName = "brian brian",
 				locator1 = "ACSegments#ADD_MEMBERS_INDEX_TABLE");
 
-			Click(locator1 = "ACSegments#ADD_MEMBERS_SORT_BUTTON");
+			AssertElementPresent(
+				index = "2",
+				key_userName = "chris chris",
+				locator1 = "ACSegments#ADD_MEMBERS_INDEX_TABLE");
+
+			ACSegments.sortButton();
 
 			AssertElementPresent(
 				index = "1",
-				key_userName = "Winston Olson",
+				key_userName = "chris chris",
+				locator1 = "ACSegments#ADD_MEMBERS_INDEX_TABLE");
+
+			AssertElementPresent(
+				index = "2",
+				key_userName = "brian brian",
 				locator1 = "ACSegments#ADD_MEMBERS_INDEX_TABLE");
 		}
 	}
