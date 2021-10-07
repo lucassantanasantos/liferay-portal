@@ -3,5 +3,18 @@ definition {
 	macro openContentPerformance {
 		Click(locator1 = "ContentPerformance#CONTENT_PERFORMANCE_BUTTON");
 	}
+	
+	macro contentPerformanceMessage {
+		AssertTextEquals(
+			key_message = "${message}",
+			locator1 = "ContentPerformance#CONTENT_PERFORMANCE_MESSAGE",
+			value1 = "${message}");
+	}
 
+	macro contentPerformanceWithoutMessage {
+		AssertElementNotPresent(
+			key_message = "${message}",
+			locator1 = "ContentPerformance#CONTENT_PERFORMANCE_MESSAGE",
+			value1 = "${message}");
+	}
 }

@@ -20,7 +20,11 @@
 	<td>//select[contains(@class,'form-control')]</td>
 	<td></td>
 </tr>
-
+<tr>
+	<td>CONTENT_PERFORMANCE_MESSAGE</td>
+	<td>//span[contains(@class,'taglib-text') and contains(.,'${key_message}')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

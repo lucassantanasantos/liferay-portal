@@ -89,21 +89,90 @@ definition {
 	}
 
 	@description = "LPS-105216: Validate that Free trial and dismiss buttons ARE NOT displayed when AC is enabled"
-	@ignore = "true"
 	@priority = "3"
 	test FreeTrialButtonNotPresent {
+		task ("Assert if element is not present") {
+			ContentPerformance.contentPerformanceWithoutMessage(message = "Start Free Trial");
 
-		// TODO LPS-139217 FreeTrialButtonNotPresent pending implementation
-
+			ContentPerformance.contentPerformanceWithoutMessage(message = "Do not show me this again.");
+		}
 	}
 
 	@description = "LPS-105216: Validate that Free trial and dismiss buttons are displayed when AC is disabled"
-	@ignore = "true"
 	@priority = "5"
 	test FreeTrialButtonPresent {
 
-		// TODO LPS-139217 FreeTrialButtonPresent pending implementation
+		task ("Open Content Performance") {
 
+			var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+			Navigator.openURL();
+
+			AnalyticsCloud.teardownAnalyticsCloud();
+
+			JSONGroup.deleteGroupByName(groupName = "Test Site Name");
+
+			if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+			}
+
+			Navigator.openURL();
+		}
+
+		task ("Go to DXP portal, login and create site") {
+			TestCase.setUpPortalInstance();
+
+			User.firstLoginPG();
+
+			Navigator.openURL();
+
+			JSONGroup.addGroup(groupName = "Test Site Name");
+		}
+
+		task ("Go to DXP portal, login and assert if element is present") {
+			ContentPerformance.openContentPerformance();
+
+			ContentPerformance.contentPerformanceMessage(message = "Start Free Trial");
+			
+			ContentPerformance.contentPerformanceMessage(message = "Do not show me this again.");
+		}
+
+		task ("Open Analytics Cloud") {
+			var analyticsCloudURL = PropsUtil.get("analytics.cloud.url");
+
+			Navigator.openURL(baseURL = "${analyticsCloudURL}");
+		}
+
+		task ("Take token from Analytics Cloud") {
+			AnalyticsCloud.loginAnalyticsCloud(
+				emailAddress = "test@liferay.com",
+				password = "test");
+
+			AnalyticsCloud.takeTokenFromAnalyticsCloud();
+		}
+
+		task ("Go to DXP portal, login and create site") {
+			TestCase.setUpPortalInstance();
+
+			User.firstLoginPG();
+
+			Navigator.openURL();
+
+			JSONGroup.addGroup(groupName = "Test Site Name");
+		}
+
+		task ("Connect and synchronyze with Analytics Cloud") {
+			AnalyticsCloud.syncAnalyticsCloud(siteName = "Test Site Name");
+		}
+
+		task ("Create content page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Content Page",
+				type = "content");
+
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+		}
 	}
 
 	@description = "LPS-108068: When there is no views nor reads in the selected range or in the default view, the line of the graphic will be at 0"
