@@ -8,6 +8,7 @@
 <thead>
 <tr><td rowspan="1" colspan="3">ContentPerformance</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>CONTENT_PERFORMANCE_BUTTON</td>
