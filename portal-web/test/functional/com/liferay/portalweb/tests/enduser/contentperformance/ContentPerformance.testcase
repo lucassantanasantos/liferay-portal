@@ -101,9 +101,7 @@ definition {
 	@description = "LPS-105216: Validate that Free trial and dismiss buttons are displayed when AC is disabled"
 	@priority = "5"
 	test FreeTrialButtonPresent {
-
 		task ("Open Content Performance") {
-
 			var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 			Navigator.openURL();
@@ -113,7 +111,7 @@ definition {
 			JSONGroup.deleteGroupByName(groupName = "Test Site Name");
 
 			if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
+				PortalInstances.tearDownCP();
 			}
 
 			Navigator.openURL();
@@ -133,7 +131,7 @@ definition {
 			ContentPerformance.openContentPerformance();
 
 			ContentPerformance.contentPerformanceMessage(message = "Start Free Trial");
-			
+
 			ContentPerformance.contentPerformanceMessage(message = "Do not show me this again.");
 		}
 
