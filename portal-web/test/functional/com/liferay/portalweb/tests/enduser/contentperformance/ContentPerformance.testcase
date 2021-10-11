@@ -92,7 +92,6 @@ definition {
 	@priority = "3"
 	test FreeTrialButtonNotPresent {
 		task ("Assert if element is not present") {
-
 			AssertElementNotPresent(
 				key_message = "Start Free Trial",
 				locator1 = "ContentPerformance#CONTENT_PERFORMANCE_MESSAGE",
