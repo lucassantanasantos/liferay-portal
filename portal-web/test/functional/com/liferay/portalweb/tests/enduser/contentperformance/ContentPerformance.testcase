@@ -108,22 +108,14 @@ definition {
 	@priority = "5"
 	test FreeTrialButtonPresent {
 		task ("Open Content Performance") {
-			var testPortalInstance = PropsUtil.get("test.portal.instance");
-
 			Navigator.openURL();
 
 			AnalyticsCloud.teardownAnalyticsCloud();
 
-			if ("${testPortalInstance}" == "true") {
-				PortalInstances.tearDownCP();
-			}
-
 			Navigator.openURL();
 		}
 
-		task ("Go to DXP portal, login and create site") {
-			TestCase.setUpPortalInstance();
-
+		task ("Go to DXP portal and login") {
 			User.firstLoginPG();
 
 			Navigator.openURL();
@@ -157,9 +149,7 @@ definition {
 			AnalyticsCloud.takeTokenFromAnalyticsCloud();
 		}
 
-		task ("Go to DXP portal, login and create site") {
-			TestCase.setUpPortalInstance();
-
+		task ("Go to DXP portal and login") {
 			User.firstLoginPG();
 
 			Navigator.openURL();
