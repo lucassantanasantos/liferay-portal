@@ -64,8 +64,38 @@ definition {
 	@priority = "5"
 	test CheckAllInfoDisplayed {
 
-		// TODO LPS-139239 CheckAllInfoDisplayed pending implementation
+		task ("Open Content Performance") {
+			ContentPerformance.openContentPerformance();
 
+			if (IsVisible(locator1 = "ContentPerformance#CONTENT_PERFORMANCE_PANEL")) {
+				Click(locator1 = "ContentPerformance#CONTENT_PERFORMANCE_BUTTON");
+			}
+			Click(locator1 = "ContentPerformance#CONTENT_PERFORMANCE_BUTTON");
+		}		
+
+		task ("Assert Title is present") {
+			AssertElementPresent(
+				locator1 = "ContentPerformance#CONTENT_PERFORMANCE_TITLE",
+				value1 = "content page");
+		}
+
+		task ("Assert URL is present") {
+			AssertElementPresent(
+				locator1 = "ContentPerformance#CONTENT_PERFORMANCE_URL",
+				value1 = "http://");
+		}
+
+		task ("Assert View Graph is present") {
+			AssertElementPresent(
+				locator1 = "ContentPerformance#CONTENT_PERFORMANCE_TOTAL_VIEWS",
+				value1 = "Total Views");
+		}
+
+		task ("Assert View Graph is present") {
+			AssertElementPresent(
+				locator1 = "ContentPerformance#CONTENT_PERFORMANCE_TRAFFIC",
+				value1 = "Traffic Channels");
+		}
 	}
 
 	@description = "LPS-132406: Given the Content Performance Panel
